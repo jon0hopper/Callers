@@ -80,65 +80,79 @@ class CallersApplicationTests {
 
 	}
 
-	
 	@Test
+	/**
+	 * Update the first existing user with a new preferred phone number
+	 * @throws Exception
+	 */
 	void updateUserPreferredPhoneNumber() throws Exception {
 
-		//get the first user
+		// get the first user
 		MvcResult call1 = mvc.perform(MockMvcRequestBuilders.get("/User").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 				.andReturn();
 
-		List<User> allUsers = mapper.readValue(call1.getResponse().getContentAsString(), new TypeReference<List<User>>() {});
+		List<User> allUsers = mapper.readValue(call1.getResponse().getContentAsString(),
+				new TypeReference<List<User>>() {
+				});
 		User user = allUsers.get(0);
-		
 
-		//update the user
-		call1 = mvc.perform(MockMvcRequestBuilders.put("/User/" + user.getUserId() + "?preferredPhoneNumber=0861112222").contentType(MediaType.APPLICATION_JSON))
+		// update the user
+		call1 = mvc
+				.perform(MockMvcRequestBuilders.put("/User/" + user.getUserId() + "?preferredPhoneNumber=0861112222")
+						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 				.andReturn();
-		
-		User updatedUser = mapper.readValue(call1.getResponse().getContentAsString(),User.class);
-		
-		assertEquals("0861112222", updatedUser.getPreferredPhoneNumner());
 
-		//get it again, to be sure it is really persisted the change
-		call1 = mvc.perform(MockMvcRequestBuilders.get("/User/" + user.getUserId()).contentType(MediaType.APPLICATION_JSON))
+		User updatedUser = mapper.readValue(call1.getResponse().getContentAsString(), User.class);
+
+		assertEquals("0861112222", updatedUser.getPreferredPhoneNumber());
+
+		// get it again, to be sure it is really persisted the change
+		call1 = mvc
+				.perform(
+						MockMvcRequestBuilders.get("/User/" + user.getUserId()).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 				.andReturn();
-		
-		updatedUser = mapper.readValue(call1.getResponse().getContentAsString(),User.class);
-		assertEquals("0861112222", updatedUser.getPreferredPhoneNumner());
+
+		updatedUser = mapper.readValue(call1.getResponse().getContentAsString(), User.class);
+		assertEquals("0861112222", updatedUser.getPreferredPhoneNumber());
 
 	}
-
-	
 
 	@Test
+	/**
+	 * Update the first existing user with new name and email.  make sure nothing else changes
+	 * @throws Exception
+	 */
 	void updateUserOthers() throws Exception {
 
-		//get the first user
+		// get the first user
 		MvcResult call1 = mvc.perform(MockMvcRequestBuilders.get("/User").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 				.andReturn();
 
-		List<User> allUsers = mapper.readValue(call1.getResponse().getContentAsString(), new TypeReference<List<User>>() {});
+		List<User> allUsers = mapper.readValue(call1.getResponse().getContentAsString(),
+				new TypeReference<List<User>>() {
+				});
 		User user = allUsers.get(0);
-		
 
-		//update the user
-		call1 = mvc.perform(MockMvcRequestBuilders.put("/User/" + user.getUserId() + "?name=tom&email=tom@home.net").contentType(MediaType.APPLICATION_JSON))
+		// update the user
+		call1 = mvc
+				.perform(MockMvcRequestBuilders.put("/User/" + user.getUserId() + "?name=tom&email=tom@home.net")
+						.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 				.andReturn();
-		
-		User updatedUser = mapper.readValue(call1.getResponse().getContentAsString(),User.class);
-		
+
+		User updatedUser = mapper.readValue(call1.getResponse().getContentAsString(), User.class);
+
 		assertEquals("tom", updatedUser.getUserName());
 		assertEquals("tom@home.net", updatedUser.getEmail());
+		assertEquals(user.getPreferredPhoneNumber(), updatedUser.getPreferredPhoneNumber());
+		
 
 	}
 
-	
 	@Test
 	void deleteUser() throws Exception {
 
@@ -238,7 +252,9 @@ class CallersApplicationTests {
 				.contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON)
 				.characterEncoding("UTF-8")).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
-		List<Phone> phones = mapper.readValue(response.getResponse().getContentAsString(), new TypeReference<List<Phone>>() {});
+		List<Phone> phones = mapper.readValue(response.getResponse().getContentAsString(),
+				new TypeReference<List<Phone>>() {
+				});
 		// There are no phones yet
 		assertEquals(0, phones.size());
 
@@ -261,7 +277,9 @@ class CallersApplicationTests {
 				.contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON)
 				.characterEncoding("UTF-8")).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
-		List<Phone> phonesAfter = mapper.readValue(response.getResponse().getContentAsString(), new TypeReference<List<Phone>>() {});
+		List<Phone> phonesAfter = mapper.readValue(response.getResponse().getContentAsString(),
+				new TypeReference<List<Phone>>() {
+				});
 		// The new phone is there
 		assertEquals(1, phonesAfter.size());
 
@@ -284,7 +302,8 @@ class CallersApplicationTests {
 				.contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON)
 				.characterEncoding("UTF-8")).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
-		phonesAfter = mapper.readValue(response.getResponse().getContentAsString(), new TypeReference<List<Phone>>() {});
+		phonesAfter = mapper.readValue(response.getResponse().getContentAsString(), new TypeReference<List<Phone>>() {
+		});
 		// now we have both phones
 		assertEquals(2, phonesAfter.size());
 
@@ -308,8 +327,10 @@ class CallersApplicationTests {
 				.contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON)
 				.characterEncoding("UTF-8")).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
-		List<Phone> phones = mapper.readValue(response.getResponse().getContentAsString(), new TypeReference<List<Phone>>() {});
-		// The initial number of phones.  There might be some from previous tests
+		List<Phone> phones = mapper.readValue(response.getResponse().getContentAsString(),
+				new TypeReference<List<Phone>>() {
+				});
+		// The initial number of phones. There might be some from previous tests
 		int initialPhones = phones.size();
 
 		// Add a new phone
@@ -331,9 +352,11 @@ class CallersApplicationTests {
 				.contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON)
 				.characterEncoding("UTF-8")).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
-		List<Phone> phonesAfter = mapper.readValue(response.getResponse().getContentAsString(), new TypeReference<List<Phone>>() {});
+		List<Phone> phonesAfter = mapper.readValue(response.getResponse().getContentAsString(),
+				new TypeReference<List<Phone>>() {
+				});
 		// The new phone is there
-		assertEquals(initialPhones+1, phonesAfter.size());
+		assertEquals(initialPhones + 1, phonesAfter.size());
 
 		Phone realPhone = phonesAfter.get(0);
 
@@ -343,13 +366,14 @@ class CallersApplicationTests {
 						.contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON)
 						.characterEncoding("UTF-8"))
 				.andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
-		
+
 		// Get the users phones again
 		response = mvc.perform(MockMvcRequestBuilders.get("/User/" + newUser.getUserId() + "/Phone")
 				.contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON)
 				.characterEncoding("UTF-8")).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
 
-		phonesAfter = mapper.readValue(response.getResponse().getContentAsString(), new TypeReference<List<Phone>>() {});
+		phonesAfter = mapper.readValue(response.getResponse().getContentAsString(), new TypeReference<List<Phone>>() {
+		});
 		// The new phone is gone
 		assertEquals(initialPhones, phonesAfter.size());
 

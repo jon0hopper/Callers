@@ -2,24 +2,17 @@ package com.jhop.callers.Callers;
 
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.UUID;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import com.jhop.callers.models.Phone;
 import com.jhop.callers.models.User;
-import com.jhop.callers.repositories.PhoneRepository;
 import com.jhop.callers.services.UserService;
 
 @SpringBootTest
@@ -137,7 +130,7 @@ public class UserServiceUnitTest {
 	public void remove_Phone() {
 
 		int totalPhoneCount = userService.listPhones().size();
-		
+
 		// Add a new user and their phone
 		User u = new User();
 		u.setUserName("Vlad");
@@ -156,8 +149,7 @@ public class UserServiceUnitTest {
 		// Check it worked
 		User user = userService.getUser(newUser.getUserId());
 		assertEquals(1, user.getPhones().size());
-		assertEquals(totalPhoneCount+1,userService.listPhones().size());
-		
+		assertEquals(totalPhoneCount + 1, userService.listPhones().size());
 
 		// Add another
 		Phone p2 = new Phone();
@@ -170,14 +162,13 @@ public class UserServiceUnitTest {
 		// check it worked
 		user = userService.getUser(newUser.getUserId());
 		assertEquals(2, user.getPhones().size());
-		assertEquals(totalPhoneCount+2,userService.listPhones().size());
+		assertEquals(totalPhoneCount + 2, userService.listPhones().size());
 
-		
 		userService.deletePhone(newUser.getUserId(), p1.getPhoneId());
 
 		user = userService.getUser(newUser.getUserId());
 		assertEquals(1, user.getPhones().size());
-		assertEquals(totalPhoneCount+1,userService.listPhones().size());
+		assertEquals(totalPhoneCount + 1, userService.listPhones().size());
 
 		// Test removing a non-existant phone
 		try {
@@ -214,10 +205,9 @@ public class UserServiceUnitTest {
 		// this is the expected path
 		user = userService.getUser(newUser.getUserId());
 		assertEquals(0, user.getPhones().size());
-		assertEquals(totalPhoneCount,userService.listPhones().size());
+		assertEquals(totalPhoneCount, userService.listPhones().size());
 
-		
-		//test removal when there are no phones
+		// test removal when there are no phones
 		// test removing the same phone again
 		try {
 			userService.deletePhone(newUser.getUserId(), p1.getPhoneId());

@@ -19,24 +19,24 @@ public class Phone {
 	@Getter
 	@Setter
 	private UUID phoneId;
-	
+
 	@Getter
 	@Setter
 	private String phoneName;
-	
+
 	@Getter
 	@Setter
 	private String phoneModel;
-	
+
 	@Getter
 	@Setter
 	private String phoneNumber;
-	//Assuming one number per phone.  Otherwise we need to model sims in phones.
-	
-	//The ID of the user who owns this phone
+	// Assuming one number per phone. Otherwise we need to model sims in phones.
+
+	// The ID of the user who owns this phone.  owner_id is stored in the db table
 	@ManyToOne
-	@JoinColumn(name="owner_id")
+	@JoinColumn(name = "owner_id")
 	@Setter
 	private User owner;
-		
+
 }

@@ -21,31 +21,32 @@ public class User {
 	@Getter
 	@Setter
 	private UUID userId;
-	
+
 	@Getter
 	@Setter
 	private String userName;
-	
+
 	@Getter
 	@Setter
 	private String password;
-	
+
 	@Getter
 	@Setter
 	private String email;
-	
+
 	@Getter
 	@Setter
-	private String preferredPhoneNumner;
-	
-	//EAGER helps with lazy initialization.  There can be performance issues with this, but overcoming them adds complexity
-	//REMOVE ensures that phones are removed when their users are removed
-	@OneToMany(mappedBy="owner",fetch = FetchType.EAGER,cascade=CascadeType.REMOVE)
+	private String preferredPhoneNumber;
+
+	// EAGER helps with lazy initialization. There can be performance issues with
+	// this, but overcoming them adds complexity
+	// REMOVE ensures that phones are removed when their users are removed
+	@OneToMany(mappedBy = "owner", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	@Getter
 	private List<Phone> phones;
-	
+
 	public void addPhone(Phone phone) {
 		phones.add(phone);
 	}
-	
+
 }
