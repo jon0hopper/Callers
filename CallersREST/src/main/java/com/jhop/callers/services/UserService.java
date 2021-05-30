@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.jhop.callers.models.Phone;
@@ -13,7 +16,13 @@ import com.jhop.callers.repositories.PhoneRepository;
 import com.jhop.callers.repositories.UserRepository;
 
 @Service
+/**
+ * This handles users and their phones.  Phones don't really exist independent of users, so for this example we handle them together
+ * @author jhopper
+ *
+ */
 public class UserService {
+	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 	
     @Autowired
     private UserRepository userRepository;
@@ -21,8 +30,19 @@ public class UserService {
     @Autowired
     private PhoneRepository phoneRepository;
 
-    public List<User> list() {
+    public List<User> listUsers() {
         return userRepository.findAll();
+    }
+    
+    /**
+     * Return all of the phones, for all users.
+     * 
+     * This isn't really needed for the functionality, but it is helpful for testing, to ensure there are no orphan phones
+     * 
+     * @return
+     */
+    public List<Phone> listPhones() {
+        return phoneRepository.findAll();
     }
     
     public User addUser(User aUser) {
@@ -42,7 +62,14 @@ public class UserService {
     
     
     public void deleteUser(UUID userID) {
-    	userRepository.deleteById(userID);    	
+    	try {
+    		userRepository.deleteById(userID);
+    	} catch(EmptyResultDataAccessException e){
+    		logger.info("deleteUser() - User {} does not exist",userID);
+    		
+    		//log the issue, and then throw it again so that it can be handled higher up
+    		throw e;
+    	}
     }
     
     

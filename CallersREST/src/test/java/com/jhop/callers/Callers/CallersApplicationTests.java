@@ -97,6 +97,96 @@ class CallersApplicationTests {
 		
 	}
 	
+	@Test
+	void deleteUser() throws Exception {
+		
+		//Get the initial number of users
+		MvcResult call1 = mvc
+				.perform(MockMvcRequestBuilders.get("/User").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+				.andReturn();
+
+		String result1 = call1.getResponse().getContentAsString();
+		System.out.println(result1);
+		// now get the id out of result1, and see that it is what we need.
+		JSONArray userList = new JSONArray(result1);
+		int initialSize = userList.length();
+		
+		
+		//Add a new user
+    	User u = new User();
+    	u.setUserName("Ben");
+    	u.setPassword("abc123");
+    	u.setEmail("bill@home.com");
+    	
+		String jsonStr = mapper.writeValueAsString(u);
+
+		MvcResult response = mvc.perform(MockMvcRequestBuilders.post("/User/").contentType(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON).characterEncoding("UTF-8").content(jsonStr))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andReturn();
+		User newUser = mapper.readValue(response.getResponse().getContentAsString(), User.class);
+	
+		assertEquals(u.getUserName(),newUser.getUserName());
+		assertEquals(u.getEmail(),newUser.getEmail());
+		
+		//we got the auto ID
+		assertTrue(newUser.getUserId()!=null);
+		
+		//Check we added one
+		call1 = mvc
+				.perform(MockMvcRequestBuilders.get("/User").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+				.andReturn();
+
+		result1 = call1.getResponse().getContentAsString();
+		System.out.println(result1);
+		// now get the id out of result1, and see that it is what we need.
+		userList = new JSONArray(result1);
+		assertEquals(initialSize+1,userList.length());
+		
+		
+		//delete the user
+		response = mvc.perform(MockMvcRequestBuilders.delete("/User/"+newUser.getUserId()).contentType(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON).characterEncoding("UTF-8"))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andReturn();
+
+		
+		//Check it is gone
+		call1 = mvc
+				.perform(MockMvcRequestBuilders.get("/User").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+				.andReturn();
+
+		result1 = call1.getResponse().getContentAsString();
+		System.out.println(result1);
+		//check the number of users is still correct
+		userList = new JSONArray(result1);
+		assertEquals(initialSize,userList.length());
+
+		
+		//delete a non user
+		response = mvc.perform(MockMvcRequestBuilders.delete("/User/11111111-b173-4e1b-8f26-2e0500655b82").contentType(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON).characterEncoding("UTF-8"))
+				.andExpect(MockMvcResultMatchers.status().isNotFound())
+				.andReturn();
+
+		//Check it is gone
+		call1 = mvc
+				.perform(MockMvcRequestBuilders.get("/User").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+				.andReturn();
+
+		result1 = call1.getResponse().getContentAsString();
+		System.out.println(result1);
+		
+		//check the number of users is still correct
+		userList = new JSONArray(result1);
+		assertEquals(initialSize,userList.length());
+		
+	}
+	
 	
 	@Test
 	void addPhone() throws Exception {
@@ -145,8 +235,36 @@ class CallersApplicationTests {
 				.andReturn();
 		
 		List<Phone> phonesAfter = mapper.readValue(response.getResponse().getContentAsString(), List.class);
-		//There are no phones yet
+		//The new phone is there
 		assertEquals(1,phonesAfter.size());
+
+	
+	
+		//Add another new phone
+		newPhone = new Phone();
+		newPhone.setPhoneModel("2001XXL2");
+		newPhone.setPhoneName("My second Phone");
+		newPhone.setPhoneNumber("1800 11332111");
+		
+		jsonStr = mapper.writeValueAsString(newPhone);
+
+		response = mvc.perform(MockMvcRequestBuilders.post("/User/" + newUser.getUserId() + "/Phone").contentType(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON).characterEncoding("UTF-8").content(jsonStr))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andReturn();
+		
+		//Get the users phones again
+		response = mvc.perform(MockMvcRequestBuilders.get("/User/" + newUser.getUserId() + "/Phone").contentType(MediaType.APPLICATION_JSON_VALUE)
+				.accept(MediaType.APPLICATION_JSON).characterEncoding("UTF-8"))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andReturn();
+		
+		phonesAfter = mapper.readValue(response.getResponse().getContentAsString(), List.class);
+		//now we have both phones
+		assertEquals(2,phonesAfter.size());
+	
+		
+		
 	}
 
 }

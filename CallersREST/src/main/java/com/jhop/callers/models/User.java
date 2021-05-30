@@ -38,7 +38,9 @@ public class User {
 	@Setter
 	private String preferredPhoneNumner;
 	
-	@OneToMany(mappedBy="owner",fetch = FetchType.EAGER)
+	//EAGER helps with lazy initialization.  There can be performance issues with this, but overcoming them adds complexity
+	//REMOVE ensures that phones are removed when their users are removed
+	@OneToMany(mappedBy="owner",fetch = FetchType.EAGER,cascade=CascadeType.REMOVE)
 	@Getter
 	private List<Phone> phones;
 	
