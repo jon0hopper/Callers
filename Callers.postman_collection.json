@@ -1,0 +1,85 @@
+{
+	"info": {
+		"_postman_id": "3927fded-0ff3-4aaa-b295-8cab83aab84a",
+		"name": "Callers",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "List Users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/User",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"User"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get phones",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/User/ed1d9265-c700-407a-8dfa-cd042c322105/Phone",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"User",
+						"ed1d9265-c700-407a-8dfa-cd042c322105",
+						"Phone"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add phone",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"phoneId\":null,\"phoneName\":\"My added Phone\",\"phoneModel\":\"2001XXL2\",\"phoneNumber\":\"1800 1122111\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/User/ed1d9265-c700-407a-8dfa-cd042c322105/Phone",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"User",
+						"ed1d9265-c700-407a-8dfa-cd042c322105",
+						"Phone"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		}
+	]
+}
