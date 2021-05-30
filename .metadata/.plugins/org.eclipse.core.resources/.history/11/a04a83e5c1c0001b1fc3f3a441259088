@@ -1,0 +1,2 @@
+insert into user values('jhopc81b-dead-4e5d-abff-90865d1e13b1','JHOP', 'abc123','jhop@home.com','0249522702' );
+insert into user values('shopc81b-dead-4e5d-abff-90865d1e13b1', 'SHOP', 'abc123','shop@home.com','0249522703' );

@@ -1,0 +1,1 @@
+insert into user values('JHOP', 'abc123','jhop@home.com','0249522702' );

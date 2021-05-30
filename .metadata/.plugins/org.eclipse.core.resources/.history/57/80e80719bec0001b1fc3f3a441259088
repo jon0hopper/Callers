@@ -1,0 +1,18 @@
+package com.jhop.callers;
+
+import org.springframework.web.bind.annotation.RestController;
+
+import com.jhop.callers.services.UserService;
+
+@RestController
+public class CallersController {
+
+	private UserService userService;
+	
+	//Because this is a component, Spring will create a UserService and pass it in
+	CallersController (UserService userService){
+		this.userService = userService;
+	}
+	
+	
+}

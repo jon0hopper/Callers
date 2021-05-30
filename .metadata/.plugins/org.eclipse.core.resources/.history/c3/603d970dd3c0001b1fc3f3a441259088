@@ -1,0 +1,72 @@
+package com.jhop.callers;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.jhop.callers.services.PhoneService;
+import com.jhop.callers.services.UserService;
+import com.jhop.callers.models.*;
+
+@RestController
+public class CallersController {
+
+	private UserService userService;
+	private PhoneService phoneService;
+	
+	//Because this is a component, Spring will create a UserService and pass it in
+	CallersController (UserService userService,PhoneService phoneService){
+		this.userService = userService;
+		this.phoneService= phoneService;
+	}
+	
+	@GetMapping("/User")
+	public List<User> getUsers(){
+		//TODO apparently we should not return Entity objects directly.  We will leave this for now.
+		
+		//Set all the passwords to null, we dont want to return them
+		List<User> result = userService.list();
+		result.stream().forEach(u -> u.setPassword(null));
+		
+		return userService.list();
+	}
+
+	@PostMapping("/User")
+	public User addUser(@RequestBody User newUser){
+		
+		//return the newly created user.  mostly so you can see the ID
+		User user = userService.addUser(newUser);
+		//don't return passwords, that rude
+		user.setPassword(null);
+		return user;
+	}
+	
+	@DeleteMapping("/User/{userId}")
+	public void deleteUser(@PathVariable UUID userId) {
+		userService.deleteUser(userId);
+	}
+	
+	@GetMapping("/User/{userId}/Phone")
+	public List<Phone> getUsersPhones(@PathVariable UUID userId){
+		User user = userService.getUser(userId);
+		if(user!=null) {
+			return user.getPhones();
+		}
+		
+		//return an empty set is better than null
+		return new ArrayList<>();
+	}
+
+	@PostMapping("/User/{userId}/Phone")
+	public void addUsersPhone(@PathVariable UUID userId,@RequestBody Phone newPhone){	
+		userService.addPhone(userId, newPhone);
+	}
+}

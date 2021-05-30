@@ -1,0 +1,2 @@
+insert into user values(default,'JHOP', 'abc123','jhop@home.com','0249522702' );
+insert into user values(default, 'SHOP', 'abc123','shop@home.com','0249522703' );

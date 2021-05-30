@@ -1,0 +1,25 @@
+package com.jhop.callers.Callers;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class UserServiceUnitTest {
+
+    @Autowired
+    private UserService userService;
+
+    @Test
+    public void whenApplicationStarts_thenHibernateCreatesInitialRecords() {
+        List<User> books = userService.list();
+
+        Assert.assertEquals(books.size(), 3);
+    }
+}

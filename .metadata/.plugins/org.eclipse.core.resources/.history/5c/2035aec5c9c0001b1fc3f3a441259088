@@ -1,0 +1,7 @@
+insert into user values(uuid(),'JHOP', 'abc123','jhop@home.com','0249522702' );
+insert into user values(uuid(), 'SHOP', 'abc123','shop@home.com','0249522733' );
+
+
+insert into phone values(uuid(), 'JHop Phone 1', '2000XL','0249522701' );
+insert into phone values(uuid(), 'JHop Phone 2', '2000XL','0249522702' );
+insert into phone values(uuid(), 'JHop Phone 3', '2000XL','0249522703' );

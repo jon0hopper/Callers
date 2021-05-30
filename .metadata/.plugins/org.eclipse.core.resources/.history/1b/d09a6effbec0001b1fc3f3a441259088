@@ -1,0 +1,25 @@
+package com.jhop.callers.services;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jhop.callers.models.User;
+import com.jhop.callers.repositories.UserRepository;
+
+@Service
+public class UserService {
+	
+    @Autowired
+    private UserRepository userRepository;
+
+    public List<User> list() {
+        return userRepository.findAll();
+    }
+    
+    public void addUser(User user) {
+    	userRepository.save(user);
+    }
+
+}

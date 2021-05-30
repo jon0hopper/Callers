@@ -1,0 +1,7 @@
+package com.jhop.callers.models;
+
+@Entity
+public class User {
+
+	
+}

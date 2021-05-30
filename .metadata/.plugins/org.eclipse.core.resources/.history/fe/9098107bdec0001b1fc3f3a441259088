@@ -1,0 +1,58 @@
+package com.jhop.callers.services;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.jhop.callers.models.Phone;
+import com.jhop.callers.models.User;
+import com.jhop.callers.repositories.PhoneRepository;
+import com.jhop.callers.repositories.UserRepository;
+
+@Service
+public class UserService {
+	
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PhoneRepository phoneRepository;
+    
+    public List<User> list() {
+        return userRepository.findAll();
+    }
+    
+    public User addUser(User aUser) {
+    	User user = userRepository.saveAndFlush(aUser);
+    	//return the one we made
+    	return user;
+    }
+
+    
+    public User getUser(UUID userID) {
+    	Optional<User> user = userRepository.findById(userID);    	
+    	return user.get();
+    }
+    
+    
+    public void deleteUser(UUID userID) {
+    	userRepository.deleteById(userID);    	
+    }
+    
+    
+    public void addPhone(UUID userID, Phone aPhone) {
+    	User user = userRepository.getById(userID);
+    	
+    	aPhone = phoneRepository.save(aPhone);
+    	
+    	if(user!=null) {
+    		user.addPhone(aPhone);
+    		userRepository.saveAndFlush(user);
+    	}
+    }
+    
+
+}

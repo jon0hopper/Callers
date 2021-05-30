@@ -1,0 +1,36 @@
+package com.jhop.callers.Callers;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+@SpringBootTest
+class CallersApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+	
+	@Test
+	void startGame() throws Exception {
+		MvcResult call1 = mvc
+				.perform(MockMvcRequestBuilders.get("/User").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.id").exists()).andExpect(jsonPath("$.finished", is(false)))
+				.andExpect(jsonPath("$.started", is(false))).andReturn();
+
+		String result1 = call1.getResponse().getContentAsString();
+		System.out.println(result1);
+		// now get the id out of result1, and see that it is what we need.
+
+		mvc.perform(MockMvcRequestBuilders.get("/startGame?name=shop").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isOk()).andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$.id").exists()).andExpect(jsonPath("$.finished", is(false)))
+				.andExpect(jsonPath("$.started", is(true)));
+
+	}
+	
+
+}

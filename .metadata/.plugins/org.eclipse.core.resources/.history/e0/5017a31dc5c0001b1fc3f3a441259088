@@ -1,0 +1,41 @@
+package com.jhop.callers;
+
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.jhop.callers.services.UserService;
+import com.jhop.callers.models.*;
+
+@RestController
+public class CallersController {
+
+	private UserService userService;
+	
+	//Because this is a component, Spring will create a UserService and pass it in
+	CallersController (UserService userService){
+		this.userService = userService;
+	}
+	
+	@GetMapping("/User")
+	public List<User> User(){
+		//TODO apparently we should not return Entity objects directly.  We will leave this for now.
+		return userService.list();
+	}
+
+	@PostMapping("/User")
+	public User User(@RequestBody User newUser){
+		
+		//return the newly created user.  mostly so you can see the ID
+		User user = userService.addUser(newUser);
+		//dont return passwords, that rude
+		user.setPassword(null);
+		return user;
+		
+	}
+	
+	
+}
