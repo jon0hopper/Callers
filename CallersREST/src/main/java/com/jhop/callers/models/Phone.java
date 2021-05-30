@@ -18,7 +18,7 @@ public class Phone {
 	@GeneratedValue
 	@Getter
 	@Setter
-	private Long phoneId;
+	private UUID phoneId;
 	
 	@Getter
 	@Setter

@@ -50,7 +50,12 @@ public class UserService {
     	//return the one we made
     	return user;
     }
-
+    
+    public User updateUser(User aUser) {
+    	User user = userRepository.save(aUser);
+    	//return the one we made
+    	return user;
+    }
     
     public User getUser(UUID userID) {
     	Optional<User> user = userRepository.findById(userID);    	
@@ -96,5 +101,29 @@ public class UserService {
     	}
     }
     
+    /**
+     * Remove a phone from a user
+     * @param userID
+     * @param aPhone
+     */
+    public void deletePhone(UUID userID, UUID phoneId) {
+    	//Get the user
+    	Optional<User> userOpt = userRepository.findById(userID);
+    	if(userOpt.isPresent()) {
+    		User user = userOpt.get();
+    		//Get the specific phone
+    		List<Phone> myphones = user.getPhones();
+    		
+    		//remove the phone from the phoneRepository
+    		Optional<Phone> endangeredPhone = myphones.stream().filter(p -> p.getPhoneId().equals(phoneId)).findFirst();
+    		if(endangeredPhone.isPresent()) {
+    			phoneRepository.delete(endangeredPhone.get());	
+    		} else {
+    			throw new EmptyResultDataAccessException("Phone does not exist", 1);
+    		}
+    	} else {
+    		throw new EmptyResultDataAccessException("User does not exist", 1);
+    	}
+    }
 
 }

@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -55,6 +57,18 @@ public class CallersController {
 		user.setPassword(null);
 		return user;
 	}
+
+	@GetMapping("/User/{userId}")
+	public User getUser(@PathVariable UUID userId){
+		//TODO apparently we should not return Entity objects directly.  We will leave this for now.
+		logger.info("getUser() - start()");
+		
+		User result = userService.getUser(userId);
+		//set the password to null, we dont want to return passwords
+		result.setPassword(null);
+		
+		return result;
+	}
 	
 	@DeleteMapping("/User/{userId}")
 	public void deleteUser(@PathVariable UUID userId) {
@@ -68,6 +82,37 @@ public class CallersController {
 			          HttpStatus.NOT_FOUND, "User Does Not Exist");
 		}
 	}
+
+	
+	
+	@PutMapping("/User/{userId}")
+	public User updateUser(@PathVariable UUID userId, @RequestParam(required = false) String preferredPhoneNumber, @RequestParam(required = false) String name,@RequestParam(required = false) String email) {
+		logger.info("deleteUser() - start() - {}", userId);
+	
+		/*
+		 * Im not super sure on this one.  There are hints that this should always PUT a whole JSON user.  However this seems excessive if you 
+		 * only want to change one value.  So lets let them specify values as parameters.
+		 */
+		
+		User user = userService.getUser(userId);
+		
+		if(preferredPhoneNumber != null) {
+			user.setPreferredPhoneNumner(preferredPhoneNumber);
+		}
+		if(name != null) {
+			user.setUserName(name);
+		}
+		if(email != null) {
+			user.setEmail(email);
+		}		
+		
+		user = userService.updateUser(user);
+		
+		//return the updated one
+		return user;
+		
+	}
+	
 	
 	@GetMapping("/User/{userId}/Phone")
 	public List<Phone> getUsersPhones(@PathVariable UUID userId){
@@ -88,4 +133,19 @@ public class CallersController {
 		
 		userService.addPhone(userId, newPhone);
 	}
+	
+	
+	@DeleteMapping("/User/{userId}/Phone/{phoneId}")
+	public void deletePhone(@PathVariable UUID userId,@PathVariable UUID phoneId) {
+		logger.info("deletePhone() - start() - {},{}", userId,phoneId);
+		
+		try {
+			userService.deletePhone(userId,phoneId);
+		} catch(EmptyResultDataAccessException e) {
+			logger.info("deletePhone() - User or Phone doesnt exist", userId);
+			throw new ResponseStatusException(
+			          HttpStatus.NOT_FOUND, "User or Phone does Not Exist");
+		}
+	}
+	
 }
